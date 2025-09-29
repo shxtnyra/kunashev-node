@@ -1,7 +1,6 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Node {
@@ -9,7 +8,7 @@ public class Node {
 
     private final int id;
     private String name;
-    private List<Node> children = new ArrayList<>();
+    private final List<Node> children = new ArrayList<>();
 
     public Node(String name) {
         this.id = ID_GENERATOR.getAndIncrement();
@@ -37,57 +36,46 @@ public class Node {
     }
 
     public Node findChildByName(String name) {
-        for (Node child : children) {
+        Queue<Node> queue = new ArrayDeque<>(children);
+
+        for (Node child : queue) {
             if (child.getName().equals(name)) {
                 return child;
             }
-        }
 
-        for (Node child : children) {
-            Node found = child.findChildByName(name);
-
-            if (found != null) {
-                return found;
-            }
+            queue.addAll(child.getChildren());
         }
 
         return null;
     }
 
     public boolean removeChildByName(String name) {
-        for (int i = 0; i < children.size(); i++) {
-            if (children.get(i).getName().equals(name)) {
-                Node toRemove = children.get(i);
-                recursiveRemove(toRemove); // Удаляем всех потомков
-                children.remove(i); // Удаляем сам узел из списка детей
-                return true;
-            }
-        }
+        Queue<Node> queue = new ArrayDeque<>(children);
 
-        for (Node child : children) {
-            if (child.removeChildByName(name)) {
+        for (Node child : queue) {
+            if (child.getName().equals(name)) {
+                recursiveRemove(child);
+                children.remove(child);
                 return true;
             }
+
+            queue.addAll(child.getChildren());
         }
 
         return false;
     }
 
     public boolean removeChildById(int id) {
-        // Сначала ищем среди прямых детей
-        for (int i = 0; i < children.size(); i++) {
-            if (children.get(i).getId() == id) {
-                Node toRemove = children.get(i);
-                recursiveRemove(toRemove); // Удаляем всех потомков
-                children.remove(i); // Удаляем сам узел из списка детей
-                return true;
-            }
-        }
+        Queue<Node> queue = new ArrayDeque<>(children);
 
-        for (Node child : children) {
-            if (child.removeChildById(id)) {
+        for (Node child : queue) {
+            if (child.getId() == id) {
+                recursiveRemove(child);
+                children.remove(child);
                 return true;
             }
+
+            queue.addAll(child.getChildren());
         }
 
         return false;

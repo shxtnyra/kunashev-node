@@ -4,14 +4,21 @@ package org.example;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Node root = new Node("root");
+        Node child1 = new Node("uniq");
+        Node child2 = new Node("dupl");
+        Node child3 = new Node("uniq 2");
+        Node child4 = new Node("dupl");
+        Node child11 = new Node("dupl");
+        Node child44 = new Node("dupl");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        root.addChild(child1);
+        root.addChild(child2);
+        root.addChild(child3);
+        root.addChild(child4);
+        child1.addChild(child11);
+        child4.addChild(child44);
+
+        System.out.println(root.findChildByName("dupl").getId());
     }
 }
